@@ -3,11 +3,8 @@ import cv2
 import mediapipe as mp
 from Classes.GestureClassifier import GestureClassifier
 
-
-def load_model():
-    loaded_model = torch.load("gesture_model.pth")
-    loaded_model.eval()  # Set the model to evaluation mode
-    return loaded_model
+# utils
+from utils import load_model
 
 
 def process_frame(frame, model):
@@ -21,8 +18,6 @@ def classify_gesture(landmark_data, model, device):
         device
     )  # Send data to the same device (cuda or cpu) as your model
     outputs = model(new_data)
-
-    print("output", outputs)
 
     with torch.no_grad():
         if outputs.dim() > 1:
