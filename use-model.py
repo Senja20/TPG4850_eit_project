@@ -35,23 +35,21 @@ def classify_gesture(landmark_data, model, device):
     return predicted_class
 
 
-def draw_landmarks(frame, results):
-    if results.multi_hand_landmarks:
-        for hand_landmarks in results.multi_hand_landmarks:
-            # Access hand landmarks (21 points)
-            for idx, landmark in enumerate(hand_landmarks.landmark):
-                height, width, _ = frame.shape
-                cx, cy = int(landmark.x * width), int(landmark.y * height)
-                cv2.circle(frame, (cx, cy), 5, (255, 0, 0), cv2.FILLED)
-                cv2.putText(
-                    frame,
-                    str(idx),
-                    (cx, cy),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5,
-                    (0, 0, 255),
-                    1,
-                )
+def draw_landmarks(idx, frame, landmark):
+    height, width, _ = frame.shape
+    cx, cy = int(landmark.x * width), int(landmark.y * height)
+    cv2.circle(frame, (cx, cy), 5, (255, 0, 0), cv2.FILLED)
+    cv2.putText(
+        frame,
+        str(idx),
+        (cx, cy),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.5,
+        (0, 0, 255),
+        1,
+    )
+
+    return frame
 
 
 def main():
@@ -82,20 +80,8 @@ def main():
                     landmark_data = []
                     # Access hand landmarks (21 points)
                     for idx, landmark in enumerate(hand_landmarks.landmark):
-                        height, width, _ = frame.shape
-                        cx, cy = int(landmark.x * width), int(landmark.y * height)
-                        cv2.circle(frame, (cx, cy), 5, (255, 0, 0), cv2.FILLED)
-                        cv2.putText(
-                            frame,
-                            str(idx),
-                            (cx, cy),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            0.5,
-                            (0, 0, 255),
-                            1,
-                        )
-
                         # Add the coordinates of the landmark to the list
+                        frame = draw_landmarks(idx, frame, landmark)
                         landmark_data.extend([landmark.x, landmark.y, landmark.z])
 
                     predicted_class = classify_gesture(
