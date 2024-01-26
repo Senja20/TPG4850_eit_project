@@ -7,7 +7,15 @@ def get_data_from_file(
     label_name: str = "Label",
     test_size: float = 0.1,
     random_state: int = 42,
-):
+) -> tuple:
+    """
+    desc: Function used to load data from csv file.
+    :param file_name: The name of the file.
+    :param label_name: The name of the label column.
+    :param test_size: The size of the test set.
+    :param random_state: The random state.
+    :return: A tuple containing the training and test data.
+    """
     df = read_csv(file_name)
 
     # Ensure that the 'Label' column is of type string - important: it will be converted into number based on string label
