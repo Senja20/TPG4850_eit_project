@@ -14,6 +14,8 @@ import torch.optim as optim
 from Classes.HandLandmarksDataset import HandLandmarksDataset
 from Classes.GestureClassifier import GestureClassifier
 
+from utils import get_data_from_file
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # hyperparameters
@@ -25,28 +27,7 @@ batch_size = 10
 learning_rate = 0.001
 
 
-def get_data_from_file():
-    df = pd.read_csv("hand_landmarks_dataset.csv")
-
-    # Ensure that the 'Label' column is of type string - important: it will be converted into number based on string label
-    df["Label"] = df["Label"].astype(str)
-
-    # make sure that data are numbers
-    landmarks_columns = (
-        [f"X{i}" for i in range(21)]
-        + [f"Y{i}" for i in range(21)]
-        + [f"Z{i}" for i in range(21)]
-    )
-    df[landmarks_columns] = df[landmarks_columns].apply(pd.to_numeric, errors="coerce")
-
-    # Drop rows with missing values
-    df = df.dropna()
-
-    # data split into training and not training
-    return train_test_split(df, test_size=0.1, random_state=42, stratify=df["Label"])
-
-
-train_set, val_set = get_data_from_file()
+train_set, val_set = get_data_from_file("hand_landmarks_dataset.csv")
 
 # create data loader instances
 train_loader = DataLoader(
