@@ -16,73 +16,88 @@ from Classes.GestureClassifier import GestureClassifier
 
 from utils import get_data_from_file
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# hyperparameters
-input_size = 21 * 3  # Assuming 21 landmarks with X, Y, and Z coordinates
-hidden_size = 64
-output_size = 2  # Number of classes (UP or DOWN)
-num_epochs = 15
-batch_size = 10
-learning_rate = 0.001
-
-
-train_set, val_set = get_data_from_file("hand_landmarks_dataset.csv")
-
-# create data loader instances
-train_loader = DataLoader(
-    HandLandmarksDataset(train_set), batch_size=batch_size, shuffle=True
-)
-val_loader = DataLoader(
-    HandLandmarksDataset(val_set), batch_size=batch_size, shuffle=False
-)
+def create_data_loaders(train_set, val_set, batch_size):
+    train_loader = DataLoader(
+        HandLandmarksDataset(train_set), batch_size=batch_size, shuffle=True
+    )
+    val_loader = DataLoader(
+        HandLandmarksDataset(val_set), batch_size=batch_size, shuffle=False
+    )
+    return train_loader, val_loader
 
 
-train_loader_iterator = iter(train_loader)
-features, labels = next(train_loader_iterator)
+def main():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-model = GestureClassifier(input_size, hidden_size, output_size)
+    # hyperparameters
+    input_size = 21 * 3  # Assuming 21 landmarks with X, Y, and Z coordinates
+    hidden_size = 64
+    output_size = 2  # Number of classes (UP or DOWN)
+    num_epochs = 15
+    batch_size = 10
+    learning_rate = 0.001
 
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    train_set, val_set = get_data_from_file("hand_landmarks_dataset.csv")
 
-n_total_steps = len(train_loader)
+    # create data loader instances
+    train_loader, val_loader = create_data_loaders(train_set, val_set, batch_size)
 
-for epoch in range(num_epochs):
-    for index, (features, labels) in enumerate(train_loader):
-        # forward
-        outputs = model(features)
+    train_loader_iterator = iter(train_loader)
+    features, labels = next(train_loader_iterator)
 
-        loss = criterion(outputs, labels)
+    model = GestureClassifier(input_size, hidden_size, output_size).to(device)
 
-        # backwards
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-        if (index + 1) % 10 == 0:
-            print(
-                f"epoch {epoch + 1} / {num_epochs}, step {index+1} / {n_total_steps}, loss = {loss.item():.4}"
-            )
+    n_total_steps = len(train_loader)
 
-# test
-with torch.no_grad():
-    n_correct = 0
-    n_samples = 0
-    for samples, labels in val_loader:
-        outputs = model(samples)
-        predicted_class = None
-        # value index
-        with torch.no_grad():
-            if outputs.dim() > 1:
-                _, predicted_class = torch.max(outputs, 1)
-            else:
-                _, predicted_class = torch.max(outputs, 0)
-            n_samples += labels.shape[0]
-            n_correct += (predicted_class == labels).sum().item()
+    for epoch in range(num_epochs):
+        for index, (features, labels) in enumerate(train_loader):
+            features = features.to(device)
+            labels = labels.to(device)
 
-    acc = 100.0 * n_correct / n_samples
+            # forward
+            outputs = model(features)
 
-    print(f"accuracy = {acc}")
+            loss = criterion(outputs, labels)
 
-torch.save(model, "gesture_model.pth")
+            # backwards
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+            if (index + 1) % 10 == 0:
+                print(
+                    f"epoch {epoch + 1} / {num_epochs}, step {index+1} / {n_total_steps}, loss = {loss.item():.4}"
+                )
+
+    # test
+    with torch.no_grad():
+        n_correct = 0
+        n_samples = 0
+        for samples, labels in val_loader:
+            samples = samples.to(device)
+            labels = labels.to(device)
+
+            outputs = model(samples)
+            predicted_class = None
+            # value index
+            with torch.no_grad():
+                if outputs.dim() > 1:
+                    _, predicted_class = torch.max(outputs, 1)
+                else:
+                    _, predicted_class = torch.max(outputs, 0)
+                n_samples += labels.shape[0]
+                n_correct += (predicted_class == labels).sum().item()
+
+        acc = 100.0 * n_correct / n_samples
+
+        print(f"accuracy = {acc}")
+
+    torch.save(model, "gesture_model.pth")
+
+
+if __name__ == "__main__":
+    main()
