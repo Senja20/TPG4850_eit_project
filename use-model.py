@@ -50,7 +50,7 @@ def draw_landmarks(idx, frame, landmark):
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    loaded_model = load_model()
+    loaded_model = load_model(device)
 
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands()
