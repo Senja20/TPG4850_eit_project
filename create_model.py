@@ -5,26 +5,13 @@ This module is used to get data, train a model and save model to the current dir
 """
 
 import torch
-from torch.utils.data import DataLoader
-import pandas as pd
-from sklearn.model_selection import train_test_split
 import torch.nn as nn
 import torch.optim as optim
 
-from Classes.HandLandmarksDataset import HandLandmarksDataset
 from Classes.GestureClassifier import GestureClassifier
+from utils import create_data_loaders
 
 from utils import get_data_from_file
-
-
-def create_data_loaders(train_set, val_set, batch_size):
-    train_loader = DataLoader(
-        HandLandmarksDataset(train_set), batch_size=batch_size, shuffle=True
-    )
-    val_loader = DataLoader(
-        HandLandmarksDataset(val_set), batch_size=batch_size, shuffle=False
-    )
-    return train_loader, val_loader
 
 
 def main():
