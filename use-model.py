@@ -37,6 +37,8 @@ def classify_gesture(landmark_data, model, device):
 def main():
     device = get_device()
 
+    swapped_label_map = {v: k for k, v in label_map.items()}
+
     loaded_model = load_model(device)
 
     mp_hands = mp.solutions.hands
@@ -71,23 +73,19 @@ def main():
                         landmark_data, loaded_model, device
                     )
 
-                    # Print or use the predicted class
-                    if predicted_class == 0:
-                        print("DOWN")
-                    elif predicted_class == 1:
-                        print("UP")
-                    elif predicted_class == 2:
-                        print("RIGHT")
+                    print(
+                        "predicted class: ", swapped_label_map[float(predicted_class)]
+                    )
 
                     top_scores, top_indices = torch.topk(output_scores, num_classes)
-
-                    swapped_label_map = {v: k for k, v in label_map.items()}
-                    print(swapped_label_map)
 
                     draw_top_scores(
                         frame,
                         top_scores,
-                        [f"Class {idx}" for idx in top_indices],
+                        [
+                            f"Class {swapped_label_map[float(idx)]}"
+                            for idx in top_indices
+                        ],
                     )
 
             cv2.imshow("Hand Landmarks", frame)
