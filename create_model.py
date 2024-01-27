@@ -34,11 +34,7 @@ def main():
     # create data loader instances
     train_loader, val_loader = create_data_loaders(train_set, val_set, batch_size)
 
-    train_loader_iterator = iter(train_loader)
-    features, labels = next(train_loader_iterator)
-
     model = GestureClassifier(input_size, hidden_size, output_size).to(device)
-
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
@@ -69,19 +65,16 @@ def main():
         n_correct = 0
         n_samples = 0
         for samples, labels in val_loader:
-            samples = samples.to(device)
-            labels = labels.to(device)
+            samples, labels = samples.to(device), labels.to(device)
 
             outputs = model(samples)
-            predicted_class = None
-            # value index
-            with torch.no_grad():
-                if outputs.dim() > 1:
-                    _, predicted_class = torch.max(outputs, 1)
-                else:
-                    _, predicted_class = torch.max(outputs, 0)
-                n_samples += labels.shape[0]
-                n_correct += (predicted_class == labels).sum().item()
+
+            _, predicted_class = (
+                torch.max(outputs, 1) if outputs.dim() > 1 else (0, outputs.item())
+            )
+
+            n_samples += labels.shape[0]
+            n_correct += (predicted_class == labels).sum().item()
 
         acc = 100.0 * n_correct / n_samples
 
