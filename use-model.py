@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 # utils
 from utils import load_model, get_device
 
+from frame_drawing import draw_landmarks, draw_top_scores
+
 
 def process_frame_landmarks(frame, model):
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert the BGR image to RGB
@@ -29,40 +31,6 @@ def classify_gesture(landmark_data, model, device):
     predicted_class = predicted_class.item()
 
     return predicted_class, outputs
-
-
-def draw_landmarks(idx, frame, landmark):
-    height, width, _ = frame.shape
-    cx, cy = int(landmark.x * width), int(landmark.y * height)
-    cv2.circle(frame, (cx, cy), 5, (255, 0, 0), cv2.FILLED)
-    cv2.putText(
-        frame,
-        str(idx),
-        (cx, cy),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.5,
-        (0, 0, 255),
-        1,
-    )
-
-    return frame
-
-
-def draw_top_scores(frame, top_scores, class_labels):
-    height, width, _ = frame.shape
-    y_offset = 20
-
-    for i, (score, label) in enumerate(zip(top_scores, class_labels)):
-        text = f"{label}: {score:.2f}"
-        cv2.putText(
-            frame,
-            text,
-            (10, y_offset + i * 20),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.5,
-            (0, 255, 0),
-            1,
-        )
 
 
 def main():
