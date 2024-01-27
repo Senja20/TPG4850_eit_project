@@ -3,11 +3,10 @@ Create model
 
 This module is used to get data, train a model and save model to the current directory.
 """
-
+from os import getenv
 import torch
 from torch import nn
 from torch import optim
-from os import getenv
 from dotenv import load_dotenv
 
 from Classes.GestureClassifier import GestureClassifier
@@ -60,7 +59,9 @@ def main():
 
             if (index + 1) % 10 == 0:
                 print(
-                    f"epoch {epoch + 1} / {num_epochs}, step {index+1} / {n_total_steps}, loss = {loss.item():.4}"
+                    f"epoch {epoch + 1} / {num_epochs}, "
+                    f"step {index+1} / {n_total_steps}, "
+                    f"loss = {loss.item():.4}"
                 )
 
     # test

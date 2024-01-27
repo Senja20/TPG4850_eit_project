@@ -48,15 +48,20 @@ def classify_gesture(landmark_data, model, device):
     return predicted_class, outputs
 
 
+def initialize():
+    """
+    Initialize the model and the device
+    :return: device and swapped label map
+    """
+    load_dotenv()
+    return get_device(), {v: k for k, v in label_map.items()}
+
+
 def main():
     """
     Main function
     """
-    load_dotenv()
-
-    device = get_device()
-
-    swapped_label_map = {v: k for k, v in label_map.items()}
+    device, swapped_label_map = initialize()
 
     loaded_model = load_model(device)
 
