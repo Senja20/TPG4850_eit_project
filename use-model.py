@@ -3,6 +3,7 @@ import cv2
 import mediapipe as mp
 from os import getenv
 from dotenv import load_dotenv
+from config import label_map
 
 # utils
 from utils import load_model, get_device
@@ -45,7 +46,7 @@ def main():
 
     frame_counter = 0
     skip_frames = 4  # Skip processing for the next 4 frames
-    num_classes = int(getenv("OUTPUY_LAYER"))
+    num_classes = int(getenv("OUTPUT_LAYER"))
 
     while True:
         ret, frame = cap.read()
@@ -71,14 +72,22 @@ def main():
                     )
 
                     # Print or use the predicted class
-                    if predicted_class == 1:
-                        print("The predicted class is: Thumb Up")
-                    else:
-                        print("The predicted class is: Thumb Down")
+                    if predicted_class == 0:
+                        print("DOWN")
+                    elif predicted_class == 1:
+                        print("UP")
+                    elif predicted_class == 2:
+                        print("RIGHT")
 
                     top_scores, top_indices = torch.topk(output_scores, num_classes)
+
+                    swapped_label_map = {v: k for k, v in label_map.items()}
+                    print(swapped_label_map)
+
                     draw_top_scores(
-                        frame, top_scores, [f"Class {idx}" for idx in top_indices]
+                        frame,
+                        top_scores,
+                        [f"Class {idx}" for idx in top_indices],
                     )
 
             cv2.imshow("Hand Landmarks", frame)

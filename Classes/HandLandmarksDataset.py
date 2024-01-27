@@ -3,6 +3,7 @@ This module contains the class for dataset.
 """
 from torch import tensor, float32, long
 from torch.utils.data import Dataset
+from config import label_map
 
 
 class HandLandmarksDataset(Dataset):
@@ -17,7 +18,7 @@ class HandLandmarksDataset(Dataset):
 
         # Assuming the label column contains string labels, map them to integer values
         self.labels = tensor(
-            self.data[self.label_column].map({"UP": 1.0, "DOWN": 0.0}).values,
+            self.data[self.label_column].map(label_map).values,
             dtype=long,
         )
 
