@@ -11,13 +11,13 @@ from os import getenv
 from dotenv import load_dotenv
 
 from Classes.GestureClassifier import GestureClassifier
-from utils import create_data_loaders, get_data_from_file
+from utils import create_data_loaders, get_data_from_file, get_device
 
 
 def main():
     load_dotenv()
     # device configuration (CPU or GPU) - CUDA is used if available
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = get_device()
 
     # hyperparameters
     input_size = int(getenv("NUMBER_LANDMARKS")) * int(

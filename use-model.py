@@ -1,13 +1,12 @@
 import torch
 import cv2
 import mediapipe as mp
-from Classes.GestureClassifier import GestureClassifier
 
 # utils
-from utils import load_model
+from utils import load_model, get_device
 
 
-def process_frame(frame, model):
+def process_frame_landmarks(frame, model):
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert the BGR image to RGB
     return model.process(rgb_frame)
 
@@ -48,7 +47,7 @@ def draw_landmarks(idx, frame, landmark):
 
 
 def main():
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = get_device()
 
     loaded_model = load_model(device)
 
@@ -68,10 +67,10 @@ def main():
         frame_counter += 1
 
         if frame_counter % (skip_frames + 1) == 0:
-            results = process_frame(frame, hands)
+            results_landmark = process_frame_landmarks(frame, hands)
 
-            if results.multi_hand_landmarks:
-                for hand_landmarks in results.multi_hand_landmarks:
+            if results_landmark.multi_hand_landmarks:
+                for hand_landmarks in results_landmark.multi_hand_landmarks:
                     landmark_data = []
                     # Access hand landmarks (21 points)
                     for idx, landmark in enumerate(hand_landmarks.landmark):
