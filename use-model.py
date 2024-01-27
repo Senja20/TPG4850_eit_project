@@ -1,6 +1,8 @@
 import torch
 import cv2
 import mediapipe as mp
+from os import getenv
+from dotenv import load_dotenv
 
 # utils
 from utils import load_model, get_device
@@ -26,7 +28,7 @@ def classify_gesture(landmark_data, model, device):
 
     predicted_class = predicted_class.item()
 
-    return predicted_class
+    return predicted_class, outputs
 
 
 def draw_landmarks(idx, frame, landmark):
@@ -46,6 +48,23 @@ def draw_landmarks(idx, frame, landmark):
     return frame
 
 
+def draw_top_scores(frame, top_scores, class_labels):
+    height, width, _ = frame.shape
+    y_offset = 20
+
+    for i, (score, label) in enumerate(zip(top_scores, class_labels)):
+        text = f"{label}: {score:.2f}"
+        cv2.putText(
+            frame,
+            text,
+            (10, y_offset + i * 20),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (0, 255, 0),
+            1,
+        )
+
+
 def main():
     device = get_device()
 
@@ -58,6 +77,7 @@ def main():
 
     frame_counter = 0
     skip_frames = 4  # Skip processing for the next 4 frames
+    num_classes = int(getenv("OUTPUY_LAYER"))
 
     while True:
         ret, frame = cap.read()
@@ -78,7 +98,7 @@ def main():
                         frame = draw_landmarks(idx, frame, landmark)
                         landmark_data.extend([landmark.x, landmark.y, landmark.z])
 
-                    predicted_class = classify_gesture(
+                    predicted_class, output_scores = classify_gesture(
                         landmark_data, loaded_model, device
                     )
 
@@ -87,6 +107,11 @@ def main():
                         print("The predicted class is: Thumb Up")
                     else:
                         print("The predicted class is: Thumb Down")
+
+                    top_scores, top_indices = torch.topk(output_scores, num_classes)
+                    draw_top_scores(
+                        frame, top_scores, [f"Class {idx}" for idx in top_indices]
+                    )
 
             cv2.imshow("Hand Landmarks", frame)
 
@@ -102,4 +127,5 @@ def main():
 
 
 if __name__ == "__main__":
+    load_dotenv()
     main()

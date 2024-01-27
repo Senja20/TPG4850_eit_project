@@ -18,6 +18,7 @@ class GestureClassifier(nn.Module):
         self.fc1 = nn.Linear(input_layer_size, hidden_layer_size)
         self.relu = nn.ReLU()
         self.fc2 = nn.Linear(hidden_layer_size, output_layer_size)
+        self.softmax = nn.Softmax()
 
     def forward(self, x):
         """
@@ -36,4 +37,5 @@ class GestureClassifier(nn.Module):
         x = self.fc1(x)
         x = self.relu(x)
         x = self.fc2(x)
+        x = self.softmax(x)
         return x
