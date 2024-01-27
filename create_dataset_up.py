@@ -1,5 +1,8 @@
-import cv2
+"""
+This file is used to create a dataset of hand landmarks and labels (UP or DOWN).
+"""
 import csv
+import cv2
 import mediapipe as mp
 
 mp_hands = mp.solutions.hands
@@ -10,8 +13,9 @@ cap = cv2.VideoCapture(0)
 frame_counter = 0
 skip_frames = 4  # Skip processing for the next 4 frames
 added_item = 0
+
 # Open a CSV file for writing
-csv_file = open("hand_landmarks_dataset.csv", "w", newline="")
+csv_file = open("hand_landmarks_dataset.csv", "w", newline="", encoding="utf-8")
 csv_writer = csv.writer(csv_file)
 header_row = (
     ["X" + str(i) for i in range(21)]

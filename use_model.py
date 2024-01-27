@@ -1,3 +1,7 @@
+"""
+This file is used to load the model and use it for inference
+"""
+
 import torch
 import cv2
 import mediapipe as mp
@@ -12,11 +16,22 @@ from frame_drawing import draw_landmarks, draw_top_scores
 
 
 def process_frame_landmarks(frame, model):
+    """
+    Process a frame and return the results
+    :param frame: frame to process
+    :param model: model to use for processing
+    """
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert the BGR image to RGB
     return model.process(rgb_frame)
 
 
 def classify_gesture(landmark_data, model, device):
+    """
+    Classify a gesture based on the landmark data
+    :param landmark_data: landmark data to use for classification
+    :param model: model to use for classification
+    :param device: device to use for classification
+    """
     new_data = torch.tensor(landmark_data)
     new_data = new_data.to(
         device
@@ -35,6 +50,11 @@ def classify_gesture(landmark_data, model, device):
 
 
 def main():
+    """
+    Main function
+    """
+    load_dotenv()
+
     device = get_device()
 
     swapped_label_map = {v: k for k, v in label_map.items()}
@@ -102,5 +122,4 @@ def main():
 
 
 if __name__ == "__main__":
-    load_dotenv()
     main()
