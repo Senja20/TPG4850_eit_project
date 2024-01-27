@@ -65,8 +65,7 @@ def main():
 
     loaded_model = load_model(device)
 
-    mp_hands = mp.solutions.hands
-    hands = mp_hands.Hands()
+    hands = mp.solutions.hands.Hands()
 
     cap = cv2.VideoCapture(0)
 
