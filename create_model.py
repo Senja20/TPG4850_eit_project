@@ -7,23 +7,27 @@ This module is used to get data, train a model and save model to the current dir
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from os import getenv
+from dotenv import load_dotenv
 
 from Classes.GestureClassifier import GestureClassifier
-from utils import create_data_loaders
-
-from utils import get_data_from_file
+from utils import create_data_loaders, get_data_from_file
 
 
 def main():
+    load_dotenv()
+    # device configuration (CPU or GPU) - CUDA is used if available
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # hyperparameters
-    input_size = 21 * 3  # Assuming 21 landmarks with X, Y, and Z coordinates
+    input_size = int(getenv("NUMBER_LANDMARKS")) * int(
+        getenv("NUMBER_OF_CHANNELS")
+    )  # Assuming 21 landmarks with X, Y, and Z coordinates
     hidden_size = 64
-    output_size = 2  # Number of classes (UP or DOWN)
-    num_epochs = 15
-    batch_size = 10
-    learning_rate = 0.001
+    output_size = int(getenv("OUTPUY_LAYER"))  # Number of classes (UP or DOWN)
+    num_epochs = int(getenv("EPOCHS"))
+    batch_size = int(getenv("BATCH_SIZE"))
+    learning_rate = float(getenv("LEARNING_RATE"))
 
     train_set, val_set = get_data_from_file("hand_landmarks_dataset.csv")
 
