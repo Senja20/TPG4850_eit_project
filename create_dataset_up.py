@@ -10,9 +10,9 @@ hands = mp_hands.Hands()
 
 cap = cv2.VideoCapture(0)
 
-frame_counter = 0
-skip_frames = 4  # Skip processing for the next 4 frames
-added_item = 0
+FRAME_COUNTER = 0
+SKIP_FRAMES = 4  # Skip processing for the next 4 frames
+ADDED_ITEM = 0
 
 # Open a CSV file for writing
 csv_file = open("hand_landmarks_dataset.csv", "w", newline="", encoding="utf-8")
@@ -28,12 +28,14 @@ csv_writer.writerow(header_row)
 
 while True:
     ret, frame = cap.read()
-    if not ret or added_item == 300:
+
+    # Break if there is no frame OR 300 samples have been added
+    if not ret or ADDED_ITEM == 300:
         break
 
-    frame_counter += 1
+    FRAME_COUNTER += 1
 
-    if frame_counter % (skip_frames + 1) == 0:
+    if FRAME_COUNTER % (SKIP_FRAMES + 1) == 0:
         # Convert the BGR image to RGB
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -60,7 +62,7 @@ while True:
                     landmark_data.extend([landmark.x, landmark.y, landmark.z])
 
                 landmark_data.append("UP")
-
+                ADDED_ITEM += 1
                 csv_writer.writerow(landmark_data)
 
         cv2.imshow("Hand Landmarks", frame)

@@ -1,11 +1,10 @@
 """
 This file is used to load the model and use it for inference
 """
-
+from os import getenv
 import torch
 import cv2
 import mediapipe as mp
-from os import getenv
 from dotenv import load_dotenv
 from config import label_map
 
