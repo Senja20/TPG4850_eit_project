@@ -36,7 +36,7 @@ def classify_gesture(landmark_data, model, device):
     new_data = new_data.to(
         device
     )  # Send data to the same device (cuda or cpu) as your model
-    outputs = model(new_data)
+    outputs = model.forward(new_data)
 
     with torch.no_grad():
         if outputs.dim() > 1:

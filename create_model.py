@@ -5,8 +5,8 @@ This module is used to get data, train a model and save model to the current dir
 """
 
 import torch
-import torch.nn as nn
-import torch.optim as optim
+from torch import nn
+from torch import optim
 from os import getenv
 from dotenv import load_dotenv
 
@@ -15,6 +15,9 @@ from utils import create_data_loaders, get_data_from_file, get_device
 
 
 def main():
+    """
+    The main function is used to get data, train a model and save model to the current directory.
+    """
     load_dotenv()
     # device configuration (CPU or GPU) - CUDA is used if available
     device = get_device()
@@ -46,7 +49,7 @@ def main():
             labels = labels.to(device)
 
             # forward
-            outputs = model(features)
+            outputs = model.forward(features)
 
             loss = criterion(outputs, labels)
 
@@ -67,7 +70,7 @@ def main():
         for samples, labels in val_loader:
             samples, labels = samples.to(device), labels.to(device)
 
-            outputs = model(samples)
+            outputs = model.forward(samples)
 
             print("outputs", outputs)  # 64 x 3
 
