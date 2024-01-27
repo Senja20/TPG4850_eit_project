@@ -9,7 +9,7 @@ cap = cv2.VideoCapture(0)
 
 frame_counter = 0
 skip_frames = 4  # Skip processing for the next 4 frames
-
+added_item = 0
 # Open a CSV file for writing
 csv_file = open("hand_landmarks_dataset.csv", "w", newline="")
 csv_writer = csv.writer(csv_file)
@@ -24,7 +24,7 @@ csv_writer.writerow(header_row)
 
 while True:
     ret, frame = cap.read()
-    if not ret:
+    if not ret or added_item == 300:
         break
 
     frame_counter += 1
@@ -59,6 +59,7 @@ while True:
                     print(landmark)
                     print(landmark.visibility)
                 landmark_data.append("UP")
+
                 csv_writer.writerow(landmark_data)
 
         cv2.imshow("Hand Landmarks", frame)

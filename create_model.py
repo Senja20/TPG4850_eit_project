@@ -24,7 +24,7 @@ def main():
         getenv("NUMBER_OF_CHANNELS")
     )  # Assuming 21 landmarks with X, Y, and Z coordinates
     hidden_size = 64
-    output_size = int(getenv("OUTPUY_LAYER"))  # Number of classes (UP or DOWN)
+    output_size = int(getenv("OUTPUT_LAYER"))  # Number of classes (UP or DOWN)
     num_epochs = int(getenv("EPOCHS"))
     batch_size = int(getenv("BATCH_SIZE"))
     learning_rate = float(getenv("LEARNING_RATE"))
@@ -48,6 +48,12 @@ def main():
             # forward
             outputs = model(features)
 
+            print("outputs", outputs)  # 64 x 3
+            print("labels", labels)
+
+            if (labels >= output_size).any():
+                print(f"Invalid label found in batch: {labels}")
+
             loss = criterion(outputs, labels)
 
             # backwards
@@ -69,6 +75,9 @@ def main():
 
             outputs = model(samples)
 
+            print("outputs", outputs)  # 64 x 3
+
+            # 3 CLASSES
             _, predicted_class = (
                 torch.max(outputs, 1) if outputs.dim() > 1 else (0, outputs.item())
             )
