@@ -48,10 +48,6 @@ while True:
                         1,
                     )
                     landmark_data.extend([landmark.x, landmark.y, landmark.z])
-
-                    print(idx)
-                    print(landmark)
-                    print(landmark.visibility)
                 landmark_data.append("DOWN")
                 added_item += 1
                 csv_writer.writerow(landmark_data)

@@ -48,12 +48,6 @@ def main():
             # forward
             outputs = model(features)
 
-            print("outputs", outputs)  # 64 x 3
-            print("labels", labels)
-
-            if (labels >= output_size).any():
-                print(f"Invalid label found in batch: {labels}")
-
             loss = criterion(outputs, labels)
 
             # backwards
