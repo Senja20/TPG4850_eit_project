@@ -52,10 +52,8 @@ def main():
 
             cv2.imshow("Hand Landmarks", frame)
 
-            key = cv2.waitKey(1)
-
             if (
-                key & 0xFF == ord("q") or key == 27
+                cv2.waitKey(1) & 0xFF == ord("q") or cv2.waitKey(1) == 27
             ):  # 27 is the ASCII value for Escape key
                 break
 
