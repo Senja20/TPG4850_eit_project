@@ -2,26 +2,17 @@
 This file is used to load the model and use it for inference
 """
 from os import getenv
-import torch
+
 import cv2
 import mediapipe as mp
+import torch
 from dotenv import load_dotenv
+
 from config import label_map
+from frame_drawing import draw_landmarks, draw_top_scores, process_frame_landmarks
 
 # utils
-from utils import load_model, get_device
-
-from frame_drawing import draw_landmarks, draw_top_scores
-
-
-def process_frame_landmarks(frame, model):
-    """
-    Process a frame and return the results
-    :param frame: frame to process
-    :param model: model to use for processing
-    """
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert the BGR image to RGB
-    return model.process(rgb_frame)
+from utils import get_device, load_model
 
 
 def classify_gesture(landmark_data, model, device):
