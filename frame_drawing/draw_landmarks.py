@@ -1,7 +1,17 @@
+"""
+Draw landmarks on a frame
+"""
 import cv2
 
 
 def draw_landmarks(index, frame, landmark):
+    """
+    Draw landmarks on a frame
+    :param index: index of the hand
+    :param frame: frame to draw on
+    :param landmark: landmark to draw
+    """
+
     height, width, _ = frame.shape
     cx, cy = int(landmark.x * width), int(landmark.y * height)
     cv2.circle(frame, (cx, cy), 5, (255, 0, 0), cv2.FILLED)

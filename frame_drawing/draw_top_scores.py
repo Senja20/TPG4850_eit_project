@@ -1,7 +1,16 @@
+"""
+Draws the top scores and their corresponding class labels on the frame.
+"""
 import cv2
 
 
 def draw_top_scores(frame, top_scores, class_labels):
+    """
+    Draws the top scores and their corresponding class labels on the frame.
+    :param frame: frame to draw on
+    :param top_scores: top scores to draw
+    :param class_labels: class labels to draw
+    """
     y_offset = 20
 
     for i, (score, label) in enumerate(zip(top_scores, class_labels)):
