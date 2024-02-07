@@ -428,12 +428,12 @@ confidence=HIGH,
 # --disable=W".
 disable=raw-checker-failed,
         bad-inline-option,
-        locally-disabled,
         file-ignored,
         suppressed-message,
         useless-suppression,
         deprecated-pragma,
-        use-symbolic-message-instead
+        use-symbolic-message-instead,
+        E1101,E0611,C0103
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

@@ -1,3 +1,7 @@
+"""
+Load the existing model and device
+"""
+
 from torch import load
 
 
