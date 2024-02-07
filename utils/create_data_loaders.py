@@ -1,4 +1,9 @@
+"""
+Create data loaders function.
+"""
+
 from torch.utils.data import DataLoader
+
 from Classes.HandLandmarksDataset import HandLandmarksDataset
 
 

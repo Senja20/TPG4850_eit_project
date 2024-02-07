@@ -1,3 +1,8 @@
+"""
+get device for model training and classification
+cuda or  cpi
+"""
+
 from torch import device
 from torch.cuda import is_available
 

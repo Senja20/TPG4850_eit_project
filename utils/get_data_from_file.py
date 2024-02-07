@@ -1,3 +1,7 @@
+"""
+Function to retrieve data from file
+"""
+
 from pandas import read_csv, to_numeric
 from sklearn.model_selection import train_test_split
 
@@ -18,7 +22,8 @@ def get_data_from_file(
     """
     df = read_csv(file_name)
 
-    # Ensure that the 'Label' column is of type string - important: it will be converted into number based on string label
+    # Ensure that the 'Label' column is of type string
+    # important: it will be converted into number based on string label
     df[label_name] = df[label_name].astype(str)
 
     # make sure that data are numbers

@@ -114,8 +114,8 @@ class UseModel:
         return output_scores, ret
 
 
+# pylint:disable=duplicate-code
 if __name__ == "__main__":
-
     use_model = UseModel()
     while True:
         use_model.increment_counter()
