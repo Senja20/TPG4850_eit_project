@@ -81,7 +81,7 @@ class UseModel:
         ret, frame = self.cap.read()
 
         results_landmark = process_frame_landmarks(frame, self.hands)
-        output_scores = None
+        output_scores, predicted_class = None, None
 
         if results_landmark.multi_hand_landmarks:
             for hand_landmarks in results_landmark.multi_hand_landmarks:
@@ -93,10 +93,6 @@ class UseModel:
                     landmark_data.extend([landmark.x, landmark.y, landmark.z])
 
                 predicted_class, output_scores = self.classify_gesture(landmark_data)
-
-                print(
-                    "predicted class: ", self.swapped_label_map[float(predicted_class)]
-                )
 
                 top_scores, top_indices = torch.topk(output_scores, self.num_classes)
 
@@ -111,7 +107,7 @@ class UseModel:
 
         cv2.imshow("Hand Landmarks", frame)
 
-        return output_scores, ret
+        return output_scores, predicted_class, ret
 
 
 # pylint:disable=duplicate-code
