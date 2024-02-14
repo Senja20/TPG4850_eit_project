@@ -1,4 +1,7 @@
-import subprocess, platform
+"""Module for automatically connecting to Trello WiFi"""
+
+import subprocess
+import platform
 import re
 
 def _windows_handler() -> int:
@@ -6,16 +9,17 @@ def _windows_handler() -> int:
     output: str = subprocess.check_output(list_networks_command, shell=True, text=True)
     matches: list[str] = re.findall("TELLO-\w*", output)
 
-    if (len(matches) > 0):
-        command: str = 'netsh wlan connect name={0} ssid={0} interface="Wi-Fi"'.format(matches[0])
-        result: subprocess.CompletedProcess[bytes] = subprocess.run(command)
+    if len(matches) > 0:
+        command: str = f'netsh wlan connect name={matches[0]} ssid={matches[0]} interface="Wi-Fi"'
+        result: subprocess.CompletedProcess[bytes] = subprocess.run(command, check=False)
         return result.returncode
-    
+
     return 1
 
 def connect() -> int:
     os_name: str = platform.system()
+
     if os_name == "Windows":
         return _windows_handler()
-    else:
-        raise Exception("Unsupported OS")
+    
+    return 1
