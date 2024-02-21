@@ -13,7 +13,12 @@ from drone import KeyboardTelloModule as kp
 from use_model import UseModel
 
 
-def getKeyboardInput(Drone):
+def getKeyboardInput(Drone_instance: tello.Tello) -> list[int]:
+    """
+    This function is used to get the keyboard input and return the values
+    :param Drone_instance: tello.Tello
+    :return: list[int]
+    """
     # LEFT RIGHT, FRONT BACK, UP DOWN, YAW VELOCITY
     lr, fb, ud, yv = 0, 0, 0, 0
     speed = 80
@@ -42,16 +47,12 @@ def getKeyboardInput(Drone):
         yv = -rotationSpeed
 
     if kp.getKey("q"):
-        if Drone.is_flying:
-            Drone.land()
+        if Drone_instance.is_flying:
+            Drone_instance.land()
         time.sleep(3)  # Landing The Drone
     elif kp.getKey("e"):
-        if not Drone.is_flying:
-            Drone.takeoff()  # Take Off The Drone
-
-    if kp.getKey("z"):  # Screen Shot Image From The Camera Display
-        # cv2.imwrite(f"tellopy/Resources/Images/{time.time()}.jpg", img)
-        time.sleep(0.3)
+        if not Drone_instance.is_flying:
+            Drone_instance.takeoff()  # Take Off The Drone
 
     return [lr, fb, ud, yv]  # Return The Given Value
 
