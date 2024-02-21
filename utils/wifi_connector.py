@@ -1,11 +1,11 @@
-"""Module for automatically connecting to Trello WiFi"""
+"""Module for automatically connecting to Tello WiFi"""
 
 import subprocess
 import platform
 import re
 
 def _windows_handler() -> int:
-    """Use netsh to discover and connect to the Trello WiFi"""
+    """Use netsh to discover and connect to the Tello WiFi"""
     list_networks_command: str = 'netsh wlan show networks'
     output: str = subprocess.check_output(list_networks_command, shell=True, text=True)
     matches: list[str] = re.findall("TELLO-\\w*", output)
@@ -18,7 +18,7 @@ def _windows_handler() -> int:
     return 1
 
 def _linux_handler() -> int:
-    """Use nmcli to discover and connect to the Trello WiFi"""
+    """Use nmcli to discover and connect to the Tello WiFi"""
     list_networks_command: str = 'nmcli dev wifi'
     output: str = subprocess.check_output(list_networks_command, shell=True, text=True)
     matches: list[str] = re.findall("TELLO-\\w*", output)
@@ -29,12 +29,13 @@ def _linux_handler() -> int:
     return 1
 
 def connect_to_wifi() -> int:
-    """Attempt to connect to the Trello WiFi. Returns 0 if succesful, non-zero if not"""
+    """Attempt to connect to the Tello WiFi. Returns 0 if succesful, non-zero if not"""
     os_name: str = platform.system()
 
     if os_name == "Windows":
         return _windows_handler()
-    elif os_name == "Linux":
+
+    if os_name == "Linux":
         return _linux_handler()
 
     return 1
