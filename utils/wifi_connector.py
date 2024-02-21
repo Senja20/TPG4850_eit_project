@@ -17,11 +17,24 @@ def _windows_handler() -> int:
 
     return 1
 
-def connect() -> int:
-    """Attempt to connect to the Trello WiFi. Returns 0 if succesfull, non-zero if not"""
+def _linux_handler() -> int:
+    """Use nmcli to discover and connect to the Trello WiFi"""
+    list_networks_command: str = 'nmcli dev wifi'
+    output: str = subprocess.check_output(list_networks_command, shell=True, text=True)
+    matches: list[str] = re.findall("TELLO-\\w*", output)
+
+    if len(matches) > 0:
+        return subprocess.call(['nmcli', 'd', 'wifi', 'connect', matches[0]])
+
+    return 1
+
+def connect_to_wifi() -> int:
+    """Attempt to connect to the Trello WiFi. Returns 0 if succesful, non-zero if not"""
     os_name: str = platform.system()
 
     if os_name == "Windows":
         return _windows_handler()
+    elif os_name == "Linux":
+        return _linux_handler()
 
     return 1
