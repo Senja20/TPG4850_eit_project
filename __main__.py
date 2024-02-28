@@ -37,9 +37,7 @@ if __name__ == "__main__":
             use_model.increment_counter()
 
             if use_model.frame_counter % (use_model.skip_frames + 1) == 0:
-                output_scores, predicted_class, ret, frame = (
-                    use_model.classified_gesture()
-                )
+                output_scores, predicted_class, frame = use_model.classified_gesture()
 
                 screen.blit(frame, (0, 0))
 

@@ -4,11 +4,12 @@ This file is used to load the model and use it for inference
 
 from os import getenv
 
-import cv2
 import mediapipe as mp
-import pygame
-import torch
+from cv2 import COLOR_BGR2RGB, VideoCapture, cvtColor, destroyAllWindows, flip, waitKey
 from dotenv import load_dotenv
+from pygame import surfarray
+from torch import max as torch_max
+from torch import no_grad, tensor, topk
 
 from config import label_map
 from frame_drawing import draw_landmarks, draw_top_scores, process_frame_landmarks
@@ -41,7 +42,7 @@ class UseModel:
 
         self.hands = mp.solutions.hands.Hands()
 
-        self.cap = cv2.VideoCapture(0)
+        self.cap = VideoCapture(0)
 
     def classify_gesture(self, landmark_data):
         """
@@ -50,18 +51,18 @@ class UseModel:
         :param model: model to use for classification
         :param device: device to use for classification
         """
-        new_data = torch.tensor(landmark_data)
+        new_data = tensor(landmark_data)
         new_data = new_data.to(
             self.device
         )  # Send data to the same device (cuda or cpu) as your model
         outputs = self.loaded_model.forward(new_data)
 
-        with torch.no_grad():
+        with no_grad():
             if outputs.dim() > 1:
 
-                _, predicted_class = torch.max(outputs, 1)
+                _, predicted_class = torch_max(outputs, 1)
             else:
-                _, predicted_class = torch.max(outputs, 0)
+                _, predicted_class = torch_max(outputs, 0)
 
         predicted_class = predicted_class.item()
 
@@ -75,13 +76,13 @@ class UseModel:
 
     def classified_gesture(self):
         """
-        Main function
-        :return: vector of gesture output scores, ret
+        Classify the gesture and draw the top scores
+        :return: output scores, predicted class, frame
         """
 
-        ret, frame = self.cap.read()
+        _, frame = self.cap.read()
 
-        frame = cv2.flip(frame, 1)
+        frame = flip(frame, 1)
 
         results_landmark = process_frame_landmarks(frame, self.hands)
         output_scores, predicted_class = None, None
@@ -97,7 +98,7 @@ class UseModel:
 
                 predicted_class, output_scores = self.classify_gesture(landmark_data)
 
-                top_scores, top_indices = torch.topk(output_scores, self.num_classes)
+                top_scores, top_indices = topk(output_scores, self.num_classes)
 
                 draw_top_scores(
                     frame,
@@ -108,13 +109,11 @@ class UseModel:
                     ],
                 )
 
-        # cv2.imshow("Hand Landmarks", mat=frame)
+        frame = cvtColor(frame, COLOR_BGR2RGB)
 
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame = surfarray.make_surface(frame.swapaxes(0, 1))
 
-        frame = pygame.surfarray.make_surface(frame.swapaxes(0, 1))
-
-        return output_scores, predicted_class, ret, frame
+        return output_scores, predicted_class, frame
 
 
 # pylint:disable=duplicate-code
@@ -125,11 +124,11 @@ if __name__ == "__main__":
         if use_model.frame_counter % (use_model.skip_frames + 1) == 0:
             use_model.classified_gesture()
 
-            key = cv2.waitKey(1)
+            key = waitKey(1)
             if (
                 key & 0xFF == ord("q") or key == 27
             ):  # 27 is the ASCII value for Escape key
                 break
 
     use_model.cap.release()
-    cv2.destroyAllWindows()
+    destroyAllWindows()
