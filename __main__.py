@@ -4,7 +4,6 @@ This file is used to load the model and use it for inference
 This file use the use_model.py file to load the model and use it for inference
 """
 
-import time
 
 import cv2
 import pygame
@@ -13,63 +12,21 @@ from djitellopy import tello
 from drone import KeyboardTelloModule as kp
 from use_model import UseModel
 
-
-def getKeyboardInput(Drone_instance: tello.Tello) -> list[int]:
-    """
-    This function is used to get the keyboard input and return the values
-    :param Drone_instance: tello.Tello
-    :return: list[int]
-    """
-    # LEFT RIGHT, FRONT BACK, UP DOWN, YAW VELOCITY
-    lr, fb, ud, yv = 0, 0, 0, 0
-    speed = 80
-    liftSpeed = 80
-    moveSpeed = 85
-    rotationSpeed = 100
-
-    if kp.getKey("LEFT"):
-        lr = -speed  # Controlling The Left And Right Movement
-    elif kp.getKey("RIGHT"):
-        lr = speed
-
-    if kp.getKey("UP"):
-        fb = moveSpeed  # Controlling The Front And Back Movement
-    elif kp.getKey("DOWN"):
-        fb = -moveSpeed
-
-    if kp.getKey("w"):
-        ud = liftSpeed  # Controlling The Up And Down Movemnt:
-    elif kp.getKey("s"):
-        ud = -liftSpeed
-
-    if kp.getKey("d"):
-        yv = rotationSpeed  # Controlling the Rotation:
-    elif kp.getKey("a"):
-        yv = -rotationSpeed
-
-    if kp.getKey("q"):
-        if Drone_instance.is_flying:
-            Drone_instance.land()
-        time.sleep(3)  # Landing The Drone
-    elif kp.getKey("e"):
-        if not Drone_instance.is_flying:
-            Drone_instance.takeoff()  # Take Off The Drone
-
-    return [lr, fb, ud, yv]  # Return The Given Value
-
-
 if __name__ == "__main__":
 
+    drone_on = False  # Define and assign a boolean value to the variable 'drone_on'
     use_model = UseModel()
     running = True
     frame_width, frame_height = 640, 480
     screen = kp.init(frame_width, frame_height)
 
     # Start Connection With Drone
-    Drone = tello.Tello()
-    Drone.connect()
+    if drone_on:
 
-    Drone.streamon()
+        Drone = tello.Tello()
+        Drone.connect()
+
+        Drone.streamon()
 
     while running:
 
@@ -88,7 +45,7 @@ if __name__ == "__main__":
 
                 pygame.display.update()
 
-                keyValues = getKeyboardInput(Drone)
+                keyValues = kp.getKeyboardInput(Drone if drone_on else use_model)
 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT or (
@@ -107,31 +64,37 @@ if __name__ == "__main__":
                 ):
 
                     if predicted_class is None:
-                        Drone.send_rc_control(0, 0, 0, 0)
+                        if drone_on:
+                            Drone.send_rc_control(0, 0, 0, 0)
                         continue
 
                     match use_model.swapped_label_map[float(predicted_class)]:
                         case "UP":
                             print("UP")
-                            Drone.send_rc_control(0, 0, 80, 0)
+                            if drone_on:
+                                Drone.send_rc_control(0, 0, 80, 0)
 
                         case "DOWN":
                             print("DOWN")
-                            Drone.send_rc_control(0, 0, -80, 0)
+                            if drone_on:
+                                Drone.send_rc_control(0, 0, -80, 0)
 
                         case _:
                             print("NO MATCH")
 
-                            Drone.send_rc_control(0, 0, 0, 0)
+                            if drone_on:
+                                Drone.send_rc_control(0, 0, 0, 0)
 
                 else:
                     print("Using Keyboard Input")
-                    Drone.send_rc_control(
-                        keyValues[0], keyValues[1], keyValues[2], keyValues[3]
-                    )
+                    if drone_on:
+                        Drone.send_rc_control(
+                            keyValues[0], keyValues[1], keyValues[2], keyValues[3]
+                        )
         except Exception as e:
             print(e)
-            Drone.emergency()
+            if drone_on:
+                Drone.emergency()
 
     use_model.cap.release()
     cv2.destroyAllWindows()
