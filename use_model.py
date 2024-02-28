@@ -107,6 +107,8 @@ class UseModel:
 
         # cv2.imshow("Hand Landmarks", mat=frame)
 
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
         return output_scores, predicted_class, ret, frame
 
 
