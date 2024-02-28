@@ -1,32 +1,34 @@
 """This module is used to capture keyboard inputs using PyGame."""
 
-import time
+from time import sleep
 
-import pygame
 from djitellopy import tello
+from pygame import constants, display
+from pygame import init as pygame_init
+from pygame import key as pygame_key
 
 
 def init(width=400, height=400):
     """Initialize Pygame Library and Set Control Display as 400x400 pixel."""
     # initialize pygame library
-    pygame.init()
+    pygame_init()
     # Set Control Display as 400x400 pixel
 
-    pygame.display.set_caption("Drone Control with Gesture Recognition")
+    display.set_caption("Drone Control with Gesture Recognition")
 
-    return pygame.display.set_mode((width, height))
+    return display.set_mode((width, height))
 
 
 def getKey(KeyName):
     """Return True if the Key is Pressed, False Otherwise."""
     ans = False
-    KeyInput = pygame.key.get_pressed()
-    mykey = getattr(pygame, "K_" + KeyName)
+    KeyInput = pygame_key.get_pressed()
+    mykey = getattr(constants, "K_" + KeyName)
 
     if KeyInput[mykey]:
         ans = True
 
-    pygame.display.update()
+    display.update()
     return ans
 
 
@@ -66,7 +68,7 @@ def getKeyboardInput(Drone_instance: tello.Tello) -> list[int]:
     if getKey("q"):
         if Drone_instance.is_flying:
             Drone_instance.land()
-        time.sleep(3)  # Landing The Drone
+        sleep(3)  # Landing The Drone
     elif getKey("e"):
         if not Drone_instance.is_flying:
             Drone_instance.takeoff()  # Take Off The Drone

@@ -5,9 +5,11 @@ This file use the use_model.py file to load the model and use it for inference
 """
 
 
-import cv2
-import pygame
+from cv2 import destroyAllWindows
 from djitellopy import tello
+from pygame import K_ESCAPE, KEYDOWN, QUIT, display
+from pygame import event as event_list
+from pygame import quit as pygame_quit
 
 from drone import KeyboardTelloModule as kp
 from use_model import UseModel
@@ -41,15 +43,15 @@ if __name__ == "__main__":
 
                 screen.blit(frame, (0, 0))
 
-                pygame.display.update()
+                display.update()
 
                 keyValues = kp.getKeyboardInput(Drone if drone_on else use_model)
 
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT or (
-                        event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+                for event in event_list.get():
+                    if event.type == QUIT or (
+                        event.type == KEYDOWN and event.key == K_ESCAPE
                     ):
-                        pygame.quit()
+                        pygame_quit()
                         print("Quitting")
                         running = False
 
@@ -95,4 +97,4 @@ if __name__ == "__main__":
                 Drone.emergency()
 
     use_model.cap.release()
-    cv2.destroyAllWindows()
+    destroyAllWindows()
