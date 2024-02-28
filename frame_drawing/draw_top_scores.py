@@ -1,6 +1,7 @@
 """
 Draws the top scores and their corresponding class labels on the frame.
 """
+
 import cv2
 
 
