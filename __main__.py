@@ -39,8 +39,6 @@ if __name__ == "__main__":
                     use_model.classified_gesture()
                 )
 
-                frame = cv2.flip(frame, 1)
-                frame = pygame.surfarray.make_surface(frame.swapaxes(0, 1))
                 screen.blit(frame, (0, 0))
 
                 pygame.display.update()

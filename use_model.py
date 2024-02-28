@@ -6,6 +6,7 @@ from os import getenv
 
 import cv2
 import mediapipe as mp
+import pygame
 import torch
 from dotenv import load_dotenv
 
@@ -80,6 +81,8 @@ class UseModel:
 
         ret, frame = self.cap.read()
 
+        frame = cv2.flip(frame, 1)
+
         results_landmark = process_frame_landmarks(frame, self.hands)
         output_scores, predicted_class = None, None
 
@@ -108,6 +111,8 @@ class UseModel:
         # cv2.imshow("Hand Landmarks", mat=frame)
 
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        frame = pygame.surfarray.make_surface(frame.swapaxes(0, 1))
 
         return output_scores, predicted_class, ret, frame
 
