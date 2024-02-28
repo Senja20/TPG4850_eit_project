@@ -3,19 +3,20 @@
 import pygame
 
 
-def init():
+def init(width=400, height=400):
     """Initialize Pygame Library and Set Control Display as 400x400 pixel."""
     # initialize pygame library
     pygame.init()
     # Set Control Display as 400x400 pixel
-    pygame.display.set_mode((400, 400))
+
+    pygame.display.set_caption("Drone Control with Gesture Recognition")
+
+    return pygame.display.set_mode((width, height))
 
 
 def getKey(KeyName):
     """Return True if the Key is Pressed, False Otherwise."""
     ans = False
-    for _ in pygame.event.get():
-        pass
     KeyInput = pygame.key.get_pressed()
     mykey = getattr(pygame, "K_" + KeyName)
 

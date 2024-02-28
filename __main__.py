@@ -7,6 +7,7 @@ This file use the use_model.py file to load the model and use it for inference
 import time
 
 import cv2
+import pygame
 from djitellopy import tello
 
 from drone import KeyboardTelloModule as kp
@@ -60,7 +61,9 @@ def getKeyboardInput(Drone_instance: tello.Tello) -> list[int]:
 if __name__ == "__main__":
 
     use_model = UseModel()
-    kp.init()
+    running = True
+    frame_width, frame_height = 640, 480
+    screen = kp.init(frame_width, frame_height)
 
     # Start Connection With Drone
     Drone = tello.Tello()
@@ -68,16 +71,32 @@ if __name__ == "__main__":
 
     Drone.streamon()
 
-    while True:
+    while running:
 
         try:
-
-            keyValues = getKeyboardInput(Drone)
 
             use_model.increment_counter()
 
             if use_model.frame_counter % (use_model.skip_frames + 1) == 0:
-                output_scores, predicted_class, ret = use_model.classified_gesture()
+                output_scores, predicted_class, ret, frame = (
+                    use_model.classified_gesture()
+                )
+
+                frame = cv2.flip(frame, 1)
+                frame = pygame.surfarray.make_surface(frame.swapaxes(0, 1))
+                screen.blit(frame, (0, 0))
+
+                pygame.display.update()
+
+                keyValues = getKeyboardInput(Drone)
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT or (
+                        event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+                    ):
+                        pygame.quit()
+                        print("Quitting")
+                        running = False
 
                 # give command to the drone, based on the output_scores
                 if (
@@ -110,12 +129,6 @@ if __name__ == "__main__":
                     Drone.send_rc_control(
                         keyValues[0], keyValues[1], keyValues[2], keyValues[3]
                     )
-
-                key = cv2.waitKey(1)
-                if (
-                    key & 0xFF == ord("q") or key == 27
-                ):  # 27 is the ASCII value for Escape key
-                    break
         except Exception as e:
             print(e)
             Drone.emergency()

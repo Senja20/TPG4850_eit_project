@@ -105,9 +105,9 @@ class UseModel:
                     ],
                 )
 
-        cv2.imshow("Hand Landmarks", frame)
+        # cv2.imshow("Hand Landmarks", mat=frame)
 
-        return output_scores, predicted_class, ret
+        return output_scores, predicted_class, ret, frame
 
 
 # pylint:disable=duplicate-code
