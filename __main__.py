@@ -15,8 +15,8 @@ from utils import connect_to_wifi
 from drone import KeyboardTelloModule as kp
 from use_model import UseModel
 
-def main():
-    drone_on = True  # Define and assign a boolean value to the variable 'drone_on'
+if __name__ == "__main__":
+    drone_on = False  # Define and assign a boolean value to the variable 'drone_on'
     use_model = UseModel()
     running = True
     frame_width, frame_height = 640, 360
@@ -97,6 +97,3 @@ def main():
 
     use_model.cap.release()
     destroyAllWindows()
-
-if __name__ == "__main__":
-    main()
