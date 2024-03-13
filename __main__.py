@@ -11,19 +11,20 @@ from pygame import K_ESCAPE, KEYDOWN, QUIT, display
 from pygame import event as event_list
 from pygame import quit as pygame_quit
 
+from utils import connect_to_wifi
 from drone import KeyboardTelloModule as kp
 from use_model import UseModel
 
 if __name__ == "__main__":
-
     drone_on = False  # Define and assign a boolean value to the variable 'drone_on'
     use_model = UseModel()
     running = True
-    frame_width, frame_height = 640, 480
+    frame_width, frame_height = 640, 360
     screen = kp.init(frame_width, frame_height)
 
     # Start Connection With Drone
     if drone_on:
+        connect_to_wifi()
 
         Drone = tello.Tello()
         Drone.connect()

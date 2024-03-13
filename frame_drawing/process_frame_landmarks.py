@@ -4,7 +4,6 @@ Process a frame and return the results
 
 import cv2
 
-
 def process_frame_landmarks(frame, model):
     """
     Process a frame and return the results

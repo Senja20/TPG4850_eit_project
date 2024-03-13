@@ -24,7 +24,7 @@ class UseModel:
     """
 
     frame_counter = 0
-    skip_frames = 4  # Skip processing for the next 4 frames
+    skip_frames = 5  # Skip processing for the next 4 frames
 
     def __init__(self):
         """
@@ -40,7 +40,11 @@ class UseModel:
 
         self.loaded_model = load_model(self.device)
 
-        self.hands = mp.solutions.hands.Hands()
+        self.hands = mp.solutions.hands.Hands(static_image_mode=False,
+            model_complexity = 0,
+            max_num_hands=1,
+            min_tracking_confidence = 0.5,
+            min_detection_confidence=0.5)
 
         self.cap = VideoCapture(0)
 
