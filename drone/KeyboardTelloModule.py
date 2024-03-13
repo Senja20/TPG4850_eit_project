@@ -3,9 +3,10 @@
 from time import sleep
 
 from djitellopy import tello
-from pygame import constants, display
+from pygame import KEYDOWN, constants, display
+from pygame import event as pygame_event
 from pygame import init as pygame_init
-from pygame import key as pygame_key
+from pygame import quit as pygame_quit
 
 
 def init(width=400, height=400):
@@ -19,24 +20,18 @@ def init(width=400, height=400):
     return display.set_mode((width, height))
 
 
-def getKey(KeyName):
-    """Return True if the Key is Pressed, False Otherwise."""
-    ans = False
-    KeyInput = pygame_key.get_pressed()
-    mykey = getattr(constants, "K_" + KeyName)
-
-    if KeyInput[mykey]:
-        ans = True
-
-    display.update()
-    return ans
+def get_key_pressed():
+    """Return the key pressed."""
+    for event in pygame_event.get():
+        if event.type == KEYDOWN:
+            return event.key
 
 
-def getKeyboardInput(Drone_instance: tello.Tello) -> list[int]:
+def get_keyboard_input(Drone_instance: tello.Tello) -> tuple[list[int], bool]:
     """
     This function is used to get the keyboard input and return the values
     :param Drone_instance: tello.Tello
-    :return: list[int]
+    :return: list[int], bool
     """
     # LEFT RIGHT, FRONT BACK, UP DOWN, YAW VELOCITY
     lr, fb, ud, yv = 0, 0, 0, 0
@@ -44,45 +39,45 @@ def getKeyboardInput(Drone_instance: tello.Tello) -> list[int]:
     liftSpeed = 80
     moveSpeed = 85
     rotationSpeed = 100
+    keep_running = True
 
-    if getKey("LEFT"):
-        lr = -speed  # Controlling The Left And Right Movement
-    elif getKey("RIGHT"):
-        lr = speed
+    match get_key_pressed():
+        case constants.K_LEFT:
+            lr = -speed  # Controlling The Left And Right Movement
+        case constants.K_RIGHT:
+            lr = speed
+        case constants.K_UP:
+            fb = moveSpeed  # Controlling The Front And Back Movement
+        case constants.K_DOWN:
+            fb = -moveSpeed
+        case constants.K_w:
+            ud = liftSpeed  # Controlling The Up And Down Movemnt:
+        case constants.K_s:
+            ud = -liftSpeed
+        case constants.K_d:
+            yv = rotationSpeed  # Controlling the Rotation:
+        case constants.K_a:
+            yv = -rotationSpeed
+        case constants.K_q:
+            if Drone_instance.is_flying:
+                Drone_instance.land()
+            sleep(3)  # Landing The Drone
+        case constants.K_e:
+            if not Drone_instance.is_flying:
+                Drone_instance.takeoff()  # Take Off The Drone
+        case constants.K_ESCAPE:
+            pygame_quit()
+            print("Quitting")
+            keep_running = False
 
-    if getKey("UP"):
-        fb = moveSpeed  # Controlling The Front And Back Movement
-    elif getKey("DOWN"):
-        fb = -moveSpeed
-
-    if getKey("w"):
-        ud = liftSpeed  # Controlling The Up And Down Movemnt:
-    elif getKey("s"):
-        ud = -liftSpeed
-
-    if getKey("d"):
-        yv = rotationSpeed  # Controlling the Rotation:
-    elif getKey("a"):
-        yv = -rotationSpeed
-
-    if getKey("q"):
-        if Drone_instance.is_flying:
-            Drone_instance.land()
-        sleep(3)  # Landing The Drone
-    elif getKey("e"):
-        if not Drone_instance.is_flying:
-            Drone_instance.takeoff()  # Take Off The Drone
-
-    return [lr, fb, ud, yv]  # Return The Given Value
+    return [lr, fb, ud, yv], keep_running  # Return The Given Value
 
 
 def main():
     """Print the Key Pressed."""
-    while getKey("LEFT"):
-        print("Left key pressed")
 
-    if getKey("RIGHT"):
-        print("Right key pressed")
+    if get_key_pressed() is not None:
+        print("Key Pressed: ", get_key_pressed())
 
 
 if __name__ == "__main__":
