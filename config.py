@@ -2,4 +2,11 @@
 This file contains the configuration for the project.
 """
 
-label_map = {"UP": 1.0, "DOWN": 0.0, "RIGHT": 2.0}
+import json
+from os import getenv
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+label_map = json.loads(getenv("CONFIG_PARAMS"))

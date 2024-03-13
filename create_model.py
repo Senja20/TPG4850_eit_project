@@ -3,11 +3,12 @@ Create model
 
 This module is used to get data, train a model and save model to the current directory.
 """
+
 from os import getenv
+
 import torch
-from torch import nn
-from torch import optim
 from dotenv import load_dotenv
+from torch import nn, optim
 
 from Classes.GestureClassifier import GestureClassifier
 from utils import create_data_loaders, get_data_from_file, get_device
