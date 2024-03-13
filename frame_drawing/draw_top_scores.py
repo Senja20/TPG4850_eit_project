@@ -20,15 +20,25 @@ def draw_arrow(frame, class_label):
 
     height, width, _ = frame.shape
 
+    height = int(height * 0.75) # Reported height is not accurate
+
     match class_label:
         case "UP":
             ax, ay = int(0.35 * width), int(0.15 * height)
             bx, by = int(0.65 * width), int(0.15 * height)
             cx, cy = width // 2, int(0.05 * height)
         case "DOWN":
-            ax, ay = int(0.35 * width), int(0.6 * height)
-            bx, by = int(0.65 * width), int(0.6 * height)
-            cx, cy = width // 2, int(0.7 * height)
+            ax, ay = int(0.35 * width), int(0.85 * height)
+            bx, by = int(0.65 * width), int(0.85 * height)
+            cx, cy = width // 2, int(0.95 * height)
+        case "LEFT":
+            ax, ay = int(0.15 * width), int(0.35 * height)
+            bx, by = int(0.15 * width), int(0.65 * height)
+            cx, cy = int(0.05 * width), height // 2
+        case "RIGHT":
+            ax, ay = int(0.85 * width), int(0.35 * height)
+            bx, by = int(0.85 * width), int(0.65 * height)
+            cx, cy = int(0.95 * width), height // 2
         case _:
             return
 
