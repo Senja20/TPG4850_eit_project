@@ -20,11 +20,15 @@ def init(width=400, height=400):
     return display.set_mode((width, height))
 
 
-def get_key_pressed():
-    """Return the key pressed."""
+def get_key_pressed() -> int:
+    """
+    Return the key pressed.
+    :return: int
+    """
     for event in pygame_event.get():
         if event.type == KEYDOWN:
             return event.key
+    return None
 
 
 def get_keyboard_input(Drone_instance: tello.Tello) -> tuple[list[int], bool]:
