@@ -3,6 +3,9 @@ Initialize a CSV writer
 """
 
 from csv import writer
+from os import getenv
+
+from dotenv import load_dotenv
 
 
 def initialize_csv_writer():
@@ -10,8 +13,10 @@ def initialize_csv_writer():
     Initialize a CSV writer
     :return: CSV writer
     """
+    load_dotenv()
+
     with open(
-        "hand_landmarks_dataset.csv", "w", newline="", encoding="utf-8"
+        getenv("HAND_LANDMARKS_DATASET"), "w", newline="", encoding="utf-8"
     ) as csv_file:
         csv_writer = writer(csv_file)
         header_row = (
