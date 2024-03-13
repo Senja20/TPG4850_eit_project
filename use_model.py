@@ -93,12 +93,7 @@ class UseModel:
 
         if results_landmark.multi_hand_landmarks:
             for hand_landmarks in results_landmark.multi_hand_landmarks:
-                landmark_data = []
-                # Access hand landmarks (21 points)
-                for idx, landmark in enumerate(hand_landmarks.landmark):
-                    # Add the coordinates of the landmark to the list
-                    frame = draw_landmarks(idx, frame, landmark)
-                    landmark_data.extend([landmark.x, landmark.y, landmark.z])
+                landmark_data, frame = draw_landmarks(hand_landmarks, frame)
 
                 predicted_class, output_scores = self.classify_gesture(landmark_data)
 
@@ -108,7 +103,7 @@ class UseModel:
                     frame,
                     top_scores,
                     [
-                        f"Class {self.swapped_label_map[float(idx)]}"
+                        f"{self.swapped_label_map[float(idx)]}"
                         for idx in top_indices
                     ],
                 )
