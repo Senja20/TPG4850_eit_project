@@ -40,9 +40,7 @@ def _linux_handler() -> int:
 
 def raise_connection_error(_):
     """Raise a ConnectionError"""
-    raise ConnectionError(
-        "Could not connect to Tello WiFi. Please ensure that the Tello Drone is powered on and broadcasting its WiFi network."
-    )
+    raise ConnectionError("Could not connect to Tello WiFi.")
 
 
 @retry(
