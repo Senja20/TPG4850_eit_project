@@ -42,10 +42,10 @@ def draw_arrow(frame, class_label):
         case _:
             return
 
-    cv2.line(frame, (ax, ay), (cx, cy), (0, 0, 0), 8) 
-    cv2.line(frame, (cx, cy), (bx, by), (0, 0, 0), 8) 
-    cv2.line(frame, (ax, ay), (cx, cy), (255, 255, 255), 6) 
-    cv2.line(frame, (cx, cy), (bx, by), (255, 255, 255), 6) 
+    cv2.line(frame, (ax, ay), (cx, cy), (0, 0, 0), 8)
+    cv2.line(frame, (cx, cy), (bx, by), (0, 0, 0), 8)
+    cv2.line(frame, (ax, ay), (cx, cy), (255, 255, 255), 6)
+    cv2.line(frame, (cx, cy), (bx, by), (255, 255, 255), 6)
 
 def draw_top_scores(frame, top_scores, class_labels):
     """
@@ -54,7 +54,7 @@ def draw_top_scores(frame, top_scores, class_labels):
     :param top_scores: top scores to draw
     :param class_labels: class labels to draw
     """
-    
+
     draw_arrow(frame, class_labels[0])
 
     for i, (score, label) in enumerate(zip(top_scores, class_labels)):

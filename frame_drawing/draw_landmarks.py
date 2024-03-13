@@ -20,7 +20,7 @@ def draw_landmarks(hand_landmarks, frame):
 
     height, width, _ = frame.shape
     landmark_data = []
-    
+
     # Draw lines between landmarks
     for pair in lines:
         landmark_a = hand_landmarks.landmark[pair[0]]
@@ -29,8 +29,8 @@ def draw_landmarks(hand_landmarks, frame):
         ax, ay = int(landmark_a.x * width), int(landmark_a.y * height)
         bx, by = int(landmark_b.x * width), int(landmark_b.y * height)
 
-        cv2.line(frame, (ax, ay), (bx, by), (0, 255, 255), 2) 
-    
+        cv2.line(frame, (ax, ay), (bx, by), (0, 255, 255), 2)
+
     # Iterate through each landmark
     for landmark in hand_landmarks.landmark:
         # Draw circle for each landmark
@@ -39,5 +39,5 @@ def draw_landmarks(hand_landmarks, frame):
 
         # Add the coordinates of the landmark to the list
         landmark_data.extend([landmark.x, landmark.y, landmark.z])
-    
+
     return landmark_data, frame
