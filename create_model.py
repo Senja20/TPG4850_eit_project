@@ -3,11 +3,12 @@ Create model
 
 This module is used to get data, train a model and save model to the current directory.
 """
+
 from os import getenv
+
 import torch
-from torch import nn
-from torch import optim
 from dotenv import load_dotenv
+from torch import nn, optim
 
 from Classes.GestureClassifier import GestureClassifier
 from utils import create_data_loaders, get_data_from_file, get_device
@@ -88,6 +89,8 @@ def main():
         print(f"accuracy = {acc}")
 
     torch.save(model, "gesture_model.pth")
+
+    model.push_to_hub("slappatuski/gesture_model")
 
 
 if __name__ == "__main__":
