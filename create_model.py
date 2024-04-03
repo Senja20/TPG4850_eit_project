@@ -3,11 +3,12 @@ Create model
 
 This module is used to get data, train a model and save model to the current directory.
 """
+
 from os import getenv
+
 import torch
-from torch import nn
-from torch import optim
 from dotenv import load_dotenv
+from torch import nn, optim
 
 from Classes.GestureClassifier import GestureClassifier
 from utils import create_data_loaders, get_data_from_file, get_device
@@ -31,7 +32,7 @@ def main():
     batch_size = int(getenv("BATCH_SIZE"))
     learning_rate = float(getenv("LEARNING_RATE"))
 
-    train_set, val_set = get_data_from_file("hand_landmarks_dataset.csv")
+    train_set, val_set = get_data_from_file(getenv("HAND_LANDMARKS_DATASET"))
 
     # create data loader instances
     train_loader, val_loader = create_data_loaders(train_set, val_set, batch_size)
@@ -88,6 +89,8 @@ def main():
         print(f"accuracy = {acc}")
 
     torch.save(model, "gesture_model.pth")
+
+    model.push_to_hub("slappatuski/gesture_model")
 
 
 if __name__ == "__main__":

@@ -8,4 +8,4 @@ torch==2.1.2
 djitellopy==2.5.0
 pygame==2.5.2
 tenacity==8.2.3
-
+huggingface-hub==0.21.4

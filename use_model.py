@@ -23,8 +23,10 @@ class UseModel:
     The class used for loading the model and using it for inference
     """
 
-    frame_counter = 0
-    skip_frames = 5  # Skip processing for the next 4 frames
+    load_dotenv()
+
+    frame_counter = int(getenv("FRAME_COUNTER"))
+    skip_frames = int(getenv("SKIP_FRAMES"))  # Skip processing for the next 4 frames
 
     def __init__(self):
         """
@@ -40,11 +42,13 @@ class UseModel:
 
         self.loaded_model = load_model(self.device)
 
-        self.hands = mp.solutions.hands.Hands(static_image_mode=False,
-            model_complexity = 0,
+        self.hands = mp.solutions.hands.Hands(
+            static_image_mode=False,
+            model_complexity=0,
             max_num_hands=1,
-            min_tracking_confidence = 0.5,
-            min_detection_confidence=0.5)
+            min_tracking_confidence=0.5,
+            min_detection_confidence=0.5,
+        )
 
         self.cap = VideoCapture(0)
 

@@ -1,17 +1,21 @@
 """This module is used to capture keyboard inputs using PyGame."""
 
+from os import getenv
 from time import sleep
 
 from djitellopy import tello
+from dotenv import load_dotenv
 from pygame import constants, display
 from pygame import event as event_list
 from pygame import init as pygame_init
 from pygame import key as pygame_key
 from pygame import quit as pygame_quit
 
+load_dotenv()
 
-def init(width=400, height=400):
-    """Initialize Pygame Library and Set Control Display as 400x400 pixel."""
+
+def init(width=int(getenv("DISPLAY_WIDTH")), height=int(getenv("DISPLAY_HEIGHT"))):
+    """Initialize Pygame Library and Set Control Display from .env ."""
     # initialize pygame library
     pygame_init()
     # Set Control Display as 400x400 pixel
@@ -45,12 +49,15 @@ def get_keyboard_input(Drone_instance: tello.Tello) -> tuple[list[int], bool]:
     :param Drone_instance: tello.Tello
     :return: list[int]
     """
+
+    load_dotenv()
+
     # LEFT RIGHT, FRONT BACK, UP DOWN, YAW VELOCITY
     lr, fb, ud, yv = 0, 0, 0, 0
-    speed = 80
-    liftSpeed = 80
-    moveSpeed = 85
-    rotationSpeed = 100
+    speed = int(getenv("SPEED"))
+    liftSpeed = int(getenv("LIFT_SPEED"))
+    moveSpeed = int(getenv("MOVE_SPEED"))
+    rotationSpeed = int(getenv("ROTATION_SPEED"))
     keep_running = True
 
     if get_key("LEFT"):

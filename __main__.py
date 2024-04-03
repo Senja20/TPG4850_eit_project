@@ -3,12 +3,12 @@
 This file is used to load the model and use it for inference
 This file use the use_model.py file to load the model and use it for inference
 """
-
-
 from atexit import register
+from os import getenv
 
 from cv2 import destroyAllWindows
 from djitellopy import tello
+from dotenv import load_dotenv
 from pygame import display
 
 from drone import KeyboardTelloModule as kp
@@ -16,10 +16,12 @@ from use_model import UseModel
 from utils import connect_to_wifi
 
 if __name__ == "__main__":
-    drone_on = True  # Define and assign a boolean value to the variable 'drone_on'
+    load_dotenv()
+
+    drone_on = False  # Define and assign a boolean value to the variable 'drone_on'
     use_model = UseModel()
     running = True
-    frame_width, frame_height = 640, 360
+    frame_width, frame_height = int(getenv("FRAME_WIDTH")), int(getenv("FRAME_HEIGHT"))
     screen = kp.init(frame_width, frame_height)
 
     # Start Connection With Drone
@@ -67,16 +69,38 @@ if __name__ == "__main__":
                         Drone.send_rc_control(0, 0, 0, 0)
                     continue
 
+                load_dotenv()
+
                 match use_model.swapped_label_map[float(predicted_class)]:
                     case "UP":
                         print("UP")
                         if drone_on:
-                            Drone.send_rc_control(0, 0, 80, 0)
+                            Drone.send_rc_control(0, 0, int(getenv("LIFT_SPEED")), 0)
 
                     case "DOWN":
                         print("DOWN")
                         if drone_on:
-                            Drone.send_rc_control(0, 0, -80, 0)
+                            Drone.send_rc_control(0, 0, -int(getenv("LIFT_SPEED")), 0)
+
+                    case "LEFT":
+                        print("LEFT")
+                        if drone_on:
+                            Drone.send_rc_control(-int(getenv("SPEED")), 0, 0, 0)
+
+                    case "RIGHT":
+                        print("RIGHT")
+                        if drone_on:
+                            Drone.send_rc_control(int(getenv("SPEED")), 0, 0, 0)
+
+                    case "FRONT":
+                        print("FRONT")
+                        if drone_on:
+                            Drone.send_rc_control(0, int(getenv("MOVE_SPEED")), 0, 0)
+
+                    case "BACK":
+                        print("BACK")
+                        if drone_on:
+                            Drone.send_rc_control(0, -int(getenv("MOVE_SPEED")), 0, 0)
 
                     case _:
                         print("NO MATCH")
