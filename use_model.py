@@ -4,7 +4,6 @@ This file is used to load the model and use it for inference
 
 from os import getenv
 
-import mediapipe as mp
 from cv2 import COLOR_BGR2RGB, VideoCapture, cvtColor, destroyAllWindows, flip, waitKey
 from dotenv import load_dotenv
 from pygame import surfarray
@@ -15,7 +14,7 @@ from config import label_map
 from frame_drawing import draw_landmarks, draw_top_scores, process_frame_landmarks
 
 # utils
-from utils import get_device, load_model
+from utils import get_device, initialize_hands, load_model
 
 
 class UseModel:
@@ -42,13 +41,7 @@ class UseModel:
 
         self.loaded_model = load_model(self.device)
 
-        self.hands = mp.solutions.hands.Hands(
-            static_image_mode=False,
-            model_complexity=0,
-            max_num_hands=1,
-            min_tracking_confidence=0.5,
-            min_detection_confidence=0.5,
-        )
+        self.hands = initialize_hands()
 
         self.cap = VideoCapture(0)
 
@@ -106,10 +99,7 @@ class UseModel:
                 draw_top_scores(
                     frame,
                     top_scores,
-                    [
-                        f"{self.swapped_label_map[float(idx)]}"
-                        for idx in top_indices
-                    ],
+                    [f"{self.swapped_label_map[float(idx)]}" for idx in top_indices],
                 )
 
         frame = cvtColor(frame, COLOR_BGR2RGB)

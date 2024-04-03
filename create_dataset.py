@@ -34,7 +34,7 @@ def main():
         ret, frame = cap.read()
 
         # Break if there is no frame OR 300 samples have been added
-        if not ret or added_item == 300:
+        if not ret or added_item == 400:
             break
 
         frame_counter += 1
@@ -46,7 +46,7 @@ def main():
             if results.multi_hand_landmarks:
                 for hand_landmarks in results.multi_hand_landmarks:
                     landmark_data, frame = draw_landmarks(hand_landmarks, frame)
-                    landmark_data.append("LEFT")
+                    landmark_data.append("RIGHT")
                     added_item += 1
                     csv_writer.writerow(landmark_data)
 
