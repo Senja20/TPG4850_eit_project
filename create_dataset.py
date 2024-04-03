@@ -45,11 +45,7 @@ def main():
 
             if results.multi_hand_landmarks:
                 for hand_landmarks in results.multi_hand_landmarks:
-                    landmark_data = []
-                    # Access hand landmarks (21 points)
-                    for idx, landmark in enumerate(hand_landmarks.landmark):
-                        frame = draw_landmarks(idx, frame, landmark)
-                        landmark_data.extend([landmark.x, landmark.y, landmark.z])
+                    landmark_data, frame = draw_landmarks(hand_landmarks, frame)
                     landmark_data.append("DOWN")
                     added_item += 1
                     # csv_writer.writerow(landmark_data)
