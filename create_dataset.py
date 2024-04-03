@@ -53,7 +53,6 @@ def main():
                     landmark_data.append("DOWN")
                     added_item += 1
                     # csv_writer.writerow(landmark_data)
-    
 
             cv2.imshow("Hand Landmarks", frame)
 
