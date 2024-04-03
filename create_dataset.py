@@ -2,7 +2,10 @@
 This file is used to create a dataset of hand landmarks and labels (UP or DOWN).
 """
 
+from os import getenv
+
 import cv2
+from dotenv import load_dotenv
 
 from frame_drawing import draw_landmarks, process_frame_landmarks
 from inits import initialize_csv_append
@@ -19,9 +22,10 @@ def main():
     Main function
     :return: None
     """
+    load_dotenv()
 
-    frame_counter = 0
-    skip_frames = 4  # Skip processing for the next 4 frames
+    frame_counter = int(getenv("FRAME_COUNTER"))
+    skip_frames = int(getenv("SKIP_FRAMES"))  # Skip processing for the next 4 frames
     added_item = 0
 
     csv_file, _ = initialize_csv_append()
