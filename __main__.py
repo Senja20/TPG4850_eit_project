@@ -16,7 +16,7 @@ from use_model import UseModel
 from utils import connect_to_wifi
 
 if __name__ == "__main__":
-    drone_on = False  # Define and assign a boolean value to the variable 'drone_on'
+    drone_on = True  # Define and assign a boolean value to the variable 'drone_on'
     use_model = UseModel()
     running = True
     frame_width, frame_height = 640, 360
@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
             keyValues, running = kp.get_keyboard_input(Drone if drone_on else use_model)
 
-            # give command to the drone, based on the output_scores
+            # give command to the, drone, based on the output_scores
             if (
                 keyValues[0] == 0
                 and keyValues[1] == 0
