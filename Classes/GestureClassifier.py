@@ -4,15 +4,27 @@ The class initializes the NN and performs forward propagation.
 The class was created to be imported by other modules.
 """
 
+from os import getenv
+
+from dotenv import load_dotenv
+from huggingface_hub import PyTorchModelHubMixin
 from torch import nn
 
 
-class GestureClassifier(nn.Module):
+class GestureClassifier(nn.Module, PyTorchModelHubMixin):
     """
     The class contains the NN used to classify gestures based on provided data.
     """
 
-    def __init__(self, input_layer_size, hidden_layer_size, output_layer_size):
+    load_dotenv()
+
+    def __init__(
+        self,
+        input_layer_size=int(getenv("NUMBER_LANDMARKS"))
+        * int(getenv("NUMBER_OF_CHANNELS")),
+        hidden_layer_size=64,
+        output_layer_size=int(getenv("OUTPUT_LAYER")),
+    ) -> None:
         super().__init__()
         self.fc1 = nn.Linear(input_layer_size, hidden_layer_size)
         self.relu = nn.ReLU()

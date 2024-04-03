@@ -90,6 +90,8 @@ def main():
 
     torch.save(model, "gesture_model.pth")
 
+    model.push_to_hub("slappatuski/gesture_model")
+
 
 if __name__ == "__main__":
     main()
