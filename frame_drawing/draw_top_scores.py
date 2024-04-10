@@ -6,8 +6,8 @@ from typing import Literal
 
 from cv2 import FILLED, FONT_HERSHEY_SIMPLEX, circle, line, putText
 
-color_fill: tuple[Literal[255], Literal[255], Literal[255]] = (255, 255, 255)
-color_stroke: tuple[Literal[0], Literal[0], Literal[0]] = (0, 0, 0)
+color_fill: tuple[int, int, int] = (255, 255, 255)
+color_stroke: tuple[int, int, int]  = (0, 0, 0)
 
 
 def draw_arrow(frame, a, b, c):
