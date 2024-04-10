@@ -2,7 +2,8 @@
 Process a frame and return the results
 """
 
-import cv2
+from cv2 import COLOR_BGR2RGB, cvtColor
+
 
 def process_frame_landmarks(frame, model):
     """
@@ -10,5 +11,5 @@ def process_frame_landmarks(frame, model):
     :param frame: frame to process
     :param model: model to use for processing
     """
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert the BGR image to RGB
+    rgb_frame = cvtColor(frame, COLOR_BGR2RGB)  # Convert the BGR image to RGB
     return model.process(rgb_frame)

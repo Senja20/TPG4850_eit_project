@@ -2,10 +2,13 @@
 Draws the top scores and their corresponding class labels on the frame.
 """
 
-import cv2
+from typing import Literal
 
-color_fill = (255, 255, 255)
-color_stroke = (0, 0, 0)
+from cv2 import FILLED, FONT_HERSHEY_SIMPLEX, circle, line, putText
+
+color_fill: tuple[int, int, int] = (255, 255, 255)
+color_stroke: tuple[int, int, int]  = (0, 0, 0)
+
 
 def draw_arrow(frame, a, b, c):
     """
@@ -14,23 +17,28 @@ def draw_arrow(frame, a, b, c):
     :param a: edge 1
     :param b: edge 2
     :param c: center
+
+    :return: None
     """
 
-    cv2.line(frame, a, c, color_stroke, 8)
-    cv2.line(frame, b, c, color_stroke, 8)
-    cv2.line(frame, a, c, color_fill, 6)
-    cv2.line(frame, b, c, color_fill, 6)
+    line(frame, a, c, color_stroke, 8)
+    line(frame, b, c, color_stroke, 8)
+    line(frame, a, c, color_fill, 6)
+    line(frame, b, c, color_fill, 6)
 
-def draw_command(frame, class_label):
+
+def draw_command(frame, class_label: str) -> None:
     """
     Draws an indication of the current drone command
     :param frame: frame to draw on
     :param class_labels: the top scoring class label
+
+    :return: None
     """
 
     height, width, _ = frame.shape
 
-    height = int(height * 0.75) # Reported height is not accurate
+    height = int(height * 0.75)  # Reported height is not accurate
 
     match class_label:
         case "UP":
@@ -63,28 +71,30 @@ def draw_command(frame, class_label):
             c = (int(0.45 * width), int(0.6 * height))
             d = (int(0.55 * width), int(0.4 * height))
 
-            cv2.line(frame, a, b, color_stroke, 8)
-            cv2.line(frame, c, d, color_stroke, 8)
-            cv2.line(frame, a, b, color_fill, 6)
-            cv2.line(frame, c, d, color_fill, 6)
+            line(frame, a, b, color_stroke, 8)
+            line(frame, c, d, color_stroke, 8)
+            line(frame, a, b, color_fill, 6)
+            line(frame, c, d, color_fill, 6)
         case "BACK":
             center = (int(0.5 * width), int(0.5 * height))
 
-            cv2.circle(frame, center, 6, color_stroke, cv2.FILLED)
-            cv2.circle(frame, center, 50, color_stroke, 7)
-            cv2.circle(frame, center, 5, color_fill, cv2.FILLED)
-            cv2.circle(frame, center, 50, color_fill, 5)
+            circle(frame, center, 6, color_stroke, FILLED)
+            circle(frame, center, 50, color_stroke, 7)
+            circle(frame, center, 5, color_fill, FILLED)
+            circle(frame, center, 50, color_fill, 5)
         case _:
             return
 
+
 x_offset = 60
 y_offset = 20
-font = cv2.FONT_HERSHEY_SIMPLEX
+font = FONT_HERSHEY_SIMPLEX
 font_size = 0.5
-font_color = (255, 255, 255)
+font_color: tuple[Literal[255], Literal[255], Literal[255]] = (255, 255, 255)
 font_thickness = 1
 
-def draw_top_scores(frame, top_scores, class_labels):
+
+def draw_top_scores(frame, top_scores, class_labels: list[str]) -> None:
     """
     Draws the top scores and their corresponding class labels on the frame.
     :param frame: frame to draw on
@@ -92,10 +102,10 @@ def draw_top_scores(frame, top_scores, class_labels):
     :param class_labels: class labels to draw
     """
 
-    draw_command(frame, class_labels[0])
+    draw_command(frame=frame, class_label=class_labels[0])
 
     for i, (score, label) in enumerate(zip(top_scores, class_labels)):
-        cv2.putText(
+        putText(
             frame,
             f"{label}:",
             (10, y_offset + i * 20),
@@ -105,7 +115,7 @@ def draw_top_scores(frame, top_scores, class_labels):
             font_thickness,
         )
 
-        cv2.putText(
+        putText(
             frame,
             f"{score:.2f}",
             (10 + x_offset, y_offset + i * 20),

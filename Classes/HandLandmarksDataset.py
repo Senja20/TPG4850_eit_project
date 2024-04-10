@@ -1,8 +1,10 @@
 """
 This module contains the class for dataset. 
 """
-from torch import tensor, float32, long
+
+from torch import float32, long, tensor
 from torch.utils.data import Dataset
+
 from config import label_map
 
 

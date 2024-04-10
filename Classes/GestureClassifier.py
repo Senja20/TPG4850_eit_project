@@ -8,10 +8,10 @@ from os import getenv
 
 from dotenv import load_dotenv
 from huggingface_hub import PyTorchModelHubMixin
-from torch import nn
+from torch.nn import Linear, Module, ReLU, Softmax
 
 
-class GestureClassifier(nn.Module, PyTorchModelHubMixin):
+class GestureClassifier(Module, PyTorchModelHubMixin):
     """
     The class contains the NN used to classify gestures based on provided data.
     """
@@ -26,10 +26,10 @@ class GestureClassifier(nn.Module, PyTorchModelHubMixin):
         output_layer_size=int(getenv("OUTPUT_LAYER")),
     ) -> None:
         super().__init__()
-        self.fc1 = nn.Linear(input_layer_size, hidden_layer_size)
-        self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(hidden_layer_size, output_layer_size)
-        self.softmax = nn.Softmax()
+        self.fc1 = Linear(input_layer_size, hidden_layer_size)
+        self.relu = ReLU()
+        self.fc2 = Linear(hidden_layer_size, output_layer_size)
+        self.softmax = Softmax()
 
     def forward(self, x):
         """

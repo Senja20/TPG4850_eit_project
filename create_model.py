@@ -32,7 +32,7 @@ def main():
     batch_size = int(getenv("BATCH_SIZE"))
     learning_rate = float(getenv("LEARNING_RATE"))
 
-    train_set, val_set = get_data_from_file(getenv("HAND_LANDMARKS_DATASET"))
+    train_set, val_set = get_data_from_file(file_name=getenv("HAND_LANDMARKS_DATASET"))
 
     # create data loader instances
     train_loader, val_loader = create_data_loaders(train_set, val_set, batch_size)
